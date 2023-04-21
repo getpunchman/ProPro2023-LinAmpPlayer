@@ -1,46 +1,58 @@
 package de.rub.LinAmpPlayer;
 
-import java.util.ArrayList;
+public class Track implements Playable{
+    private String trackTitle;  // album title
+    private Artist artist;  // track artist
+    private Album album;  // track album
+    private int length;  // length of the track in seconds
 
-public class Track {
-    public String trackTitle;  // album title
-    public String artist;  // track artist
-    public String album;  // track album
-    public int length;  // length of the track in seconds
-
-
-    public Track(String trackTitle, String artist, String album, int length) {
+    public Track(String trackTitle, Artist artist, Album album, int length) {
         this.trackTitle = trackTitle;
         this.artist = artist;
         this.album = album;
         this.length = length;
     }
 
+
+    @Override
+    public String getDescription() {
+        return artist.getArtistName() + " - " + trackTitle + " (" + Playable.getRuntimeString(length) + ")";
+    }
+
+    @Override
+    public int getLength() {
+        return length;
+    }
+
+    public String getTrackTitle() {
+        return trackTitle;
+    }
+
+    public void setTrackTitle(String trackTitle) {
+        this.trackTitle = trackTitle;
+    }
+
+    public Artist getArtist() {
+        return artist;
+    }
+
+    public void setArtist(Artist artist) {
+        this.artist = artist;
+    }
+
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(Album album) {
+        this.album = album;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
     public void setLength(int hours, int minutes, int seconds) {
         this.length = hours * 60 * 60 + minutes * 60 + seconds;
     }
-
-    public String getDescription() {
-        return artist + " - " + trackTitle + " (" + getRuntimeString(length) + ")";
-    }
-
-    /**
-     * Formats a time in seconds into a String with the format hh:mm:ss or mm:ss if hours = 0
-     * @param timeInSeconds The time in seconds
-     * @return The formatted String
-     */
-    public static String getRuntimeString(int timeInSeconds) {
-        int tAbs = Math.abs(timeInSeconds);
-        if(timeInSeconds >= 60 * 60) {
-            int hours = Math.floorDiv(tAbs, 60 * 60);
-            int minutes = Math.floorDiv(tAbs % (60 * 60), 60);
-            int seconds = tAbs % 60;
-            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-        } else {
-            int minutes = Math.floorDiv(tAbs, 60);
-            int seconds = tAbs % 60;
-            return String.format("%02d:%02d", minutes, seconds);
-        }
-    }
-
 }

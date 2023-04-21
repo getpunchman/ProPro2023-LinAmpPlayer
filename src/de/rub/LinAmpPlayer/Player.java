@@ -1,5 +1,7 @@
 package de.rub.LinAmpPlayer;
 
+import java.util.ArrayList;
+
 public class Player {
 
     public Player() {
@@ -13,43 +15,52 @@ public class Player {
      */
     public void PlayTrack(Track track) {
         try {
-            System.out.println("▶ (00:00/" + Track.getRuntimeString(track.length) + ") |o--------------| Now Playing: " + track.getDescription());
-            Thread.sleep(track.length);
+            System.out.println("▶ (00:00/" + Playable.getRuntimeString(track.getLength()) + ") |o--------------| Now Playing: " + track.getDescription());
+            Thread.sleep(track.getLength());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Plays all tracks on a given album (blocking call).
-     * @param album The album to play.
+     * Plays all tracks on a given collection (blocking call).
+     * @param collection The collection to play.
      */
-    public void PlayAlbum(Album album) {
-        System.out.println("\uD834\uDD60 Playing " + album.getDescription());
-        for (Track track: album.tracks) {
+    public void PlayCollection(MusicCollection collection) {
+        System.out.println("\uD834\uDD60 Playing " + collection.getDescription());
+
+        for (int i = 0; i < collection.getNumberOfTracks(); i++) {
+            Track track = collection.getTrack(i);
             PlayTrack(track);
         }
     }
 
     public static void main(String[] args) {
-        Album wywh = new Album("Wish You Were Here", "Pink Floyd");
-        wywh.tracks.add(new Track("Shine On You Crazy Diamond, Pts. 1-5", "Pink Floyd", "Wish You Were Here", 13*60+30));
-        wywh.tracks.add(new Track("Welcome To The Machine", "Pink Floyd", "Wish You Were Here", 7*60+33));
-        wywh.tracks.add(new Track("Have A Cigar", "Pink Floyd", "Wish You Were Here", 5*60+7));
-        wywh.tracks.add(new Track("Wish You Were Here", "Pink Floyd", "Wish You Were Here", 5*60+5));
-        wywh.tracks.add(new Track("Shine On You Crazy Diamond, Pts. 6-9", "Pink Floyd", "Wish You Were Here", 12*60+23));
-        wywh.updateLength();
+        Artist pf = new Artist("Pink Floyd");
+        Album wywh = new Album("Wish You Were Here", pf);
+        Track shine = new Track("Shine On You Crazy Diamond, Pts. 1-5", pf, wywh, 13 * 60 + 30);
+        wywh.addTrack(shine);
+        wywh.addTrack(new Track("Welcome To The Machine", pf, wywh, 7*60+33));
+        wywh.addTrack(new Track("Have A Cigar", pf, wywh, 5*60+7));
+        wywh.addTrack(new Track("Wish You Were Here", pf, wywh, 5*60+5));
+        wywh.addTrack(new Track("Shine On You Crazy Diamond, Pts. 6-9", pf, wywh, 12*60+23));
 
-        Album lysf = new Album("Lift Your Skinny Fists Like Antennas to Heaven", "Godspeed You! Black Emperor");
-        lysf.tracks.add(new Track("Storm", "Godspeed You! Black Emperor", "Wish You Were Here", 22*60+32));
-        lysf.tracks.add(new Track("Static", "Godspeed You! Black Emperor", "Wish You Were Here", 22*60+35));
-        lysf.tracks.add(new Track("Sleep", "Godspeed You! Black Emperor", "Wish You Were Here", 23*60+17));
-        lysf.tracks.add(new Track("Like Antennas To Heaven...", "Godspeed You! Black Emperor", "Wish You Were Here", 18*60+57));
-        lysf.updateLength();
+        Artist gybe = new Artist("Godspeed You! Black Emperor");
+        Album lysf = new Album("Lift Your Skinny Fists Like Antennas to Heaven", gybe);
+        Track storm = new Track("Storm", gybe, lysf, 22 * 60 + 32);
+        lysf.addTrack(storm);
+        lysf.addTrack(new Track("Static", gybe, lysf, 22*60+35));
+        lysf.addTrack(new Track("Sleep", gybe, lysf, 23*60+17));
+        lysf.addTrack(new Track("Like Antennas To Heaven...", gybe, lysf, 18*60+57));
+
+        Playlist playlist = new Playlist("Ambient Rock");
+        playlist.addTrack(shine);
+        playlist.addTrack(storm);
 
         Player player = new Player();
-        player.PlayAlbum(wywh);
-        player.PlayAlbum(lysf);
+        player.PlayCollection(wywh);
+        player.PlayCollection(lysf);
+        player.PlayCollection(playlist);
     }
 
 }
